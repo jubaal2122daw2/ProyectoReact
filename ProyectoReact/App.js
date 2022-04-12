@@ -1,54 +1,54 @@
 import * as React from 'react';
 import { View, useWindowDimensions, StyleSheet, Text, Image} from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import { HomeComponent } from './components/HomeComponent';
+import { MapComponent } from './components/MapComponent';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const IndexRoute = () => (
-  <View style={styles.container}>
-    <Image style={styles.image} source = {require("./assets/logo.png")}/>
-      <Text>Open up App.js to start working on your app!</Text>
-  </View>
-);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f52f2f',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white'
-  },
-  image: {
-    marginBottom: 40,
-    width: 300,
-    height: 300,
-  }
-});
-
-const MapRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
+const DummyRoute = () => ( // DEBUG
+  <View style={{ flex: 1, backgroundColor: '#fff' }} />
 );
 
 const renderScene = SceneMap({
-  index: IndexRoute,
-  map: MapRoute,
+  index: HomeComponent,
+  map: MapComponent,
+  purchase: DummyRoute
 });
 
-export default function TabViewExample() {
+const renderTabBar = props => (
+  <TabBar
+    {...props}
+    style={{ backgroundColor: '#121212' }}
+    indicatorStyle={{ backgroundColor: '#222', height: '100%' }}
+    renderIcon={({ route, focused, color }) => (
+      <Icon
+        name={route.icon}
+        color={color}
+        style={{ width: '100%' }}
+      />
+    )}
+  />
+);
+
+export default function App() {
   const layout = useWindowDimensions();
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: 'index', title: 'Inici' },
-    { key: 'map', title: 'Mapa' },
+    { key: 'index', title: 'Inicio', icon: 'home' },
+    { key: 'map', title: 'Mapa', icon: 'map' },
+    { key: 'purchase', title: 'Comprar', icon: 'shopping-cart' },
   ]);
 
   return (
     <TabView
+      renderTabBar={renderTabBar}
       navigationState={{ index, routes }}
       renderScene={renderScene}
       onIndexChange={setIndex}
       initialLayout={{ width: layout.width }}
       tabBarPosition="bottom"
-    />
+      swipeEnabled={ false }
+    /> 
   );
 }
