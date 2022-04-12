@@ -1,15 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import * as React from 'react';
+import { View, useWindowDimensions, StyleSheet, Text, Image} from 'react-native';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Image style={styles.image} source = {require("./assets/logo.png")}/>
+const IndexRoute = () => (
+  <View style={styles.container}>
+    <Image style={styles.image} source = {require("./assets/logo.png")}/>
       <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -25,3 +23,32 @@ const styles = StyleSheet.create({
     height: 300,
   }
 });
+
+const MapRoute = () => (
+  <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
+);
+
+const renderScene = SceneMap({
+  index: IndexRoute,
+  map: MapRoute,
+});
+
+export default function TabViewExample() {
+  const layout = useWindowDimensions();
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: 'index', title: 'Inici' },
+    { key: 'map', title: 'Mapa' },
+  ]);
+
+  return (
+    <TabView
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{ width: layout.width }}
+      tabBarPosition="bottom"
+    />
+  );
+}
