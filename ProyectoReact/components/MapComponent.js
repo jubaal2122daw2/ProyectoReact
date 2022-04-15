@@ -1,52 +1,70 @@
 import React from 'react';
-import MapView ,{ MAP_TYPES, PROVIDER_DEFAULT,UrlTile } from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions} from 'react-native';
+import MapView from 'react-native-maps';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
 
 const styles = StyleSheet.create({
-    map: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
-      },
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
 });
+export class MapComponent extends React.Component {
 
-const { width, height } = Dimensions.get('window');
+  coords = [{
+    lat: 41.390205,
+    lng: 2.174007,  
+  }, {
+    lat: 41.380205,
+    lng: 2.175007,
+  }]
 
-const ASPECT_RATIO = width / height;
-const LATITUDE = 22.720555;
-const LONGITUDE = 75.858633;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
-export class MapComponent extends React.Component{
-    constructor(props) {
-        super(props);
-          this.state = {
-            region: {
-              latitude: LATITUDE,
-              longitude: LONGITUDE,
-              latitudeDelta: LATITUDE_DELTA,
-              longitudeDelta: LONGITUDE_DELTA,
-            },
-          };
-      }
-    get mapType() {
-        return this.props.provider === PROVIDER_DEFAULT ? MAP_TYPES.STANDARD : MAP_TYPES.NONE;
-     }
-    render(){
-        return(
-            <View>
-               <MapView
-                    region={this.state.region}
-                    provider={null}
-                    mapType={this.mapType}
-                    rotateEnabled={false}
-                    style={{flex: 1}}
-                    showsUserLocation>
-                    <UrlTile
-                    urlTemplate="http://a.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png"
-                    maximumZ={19}/>
-                </MapView>
-            </View>
-        );
-    }
+  constructor(props) {
+    super(props);
+  }
+  
+  render() {
+    return (
+      <View style={styles.container}>
+        <MapView style={styles.map} initialRegion={{
+          latitude: this.coords[0].lat,
+          longitude: this.coords[0].lng,
+          latitudeDelta: 0.0622,
+          longitudeDelta: 0.0121,
+        }}>
+          <MapView.Marker
+            coordinate={{
+              latitude: this.coords[0].lat,
+              longitude: this.coords[0].lng
+            }}
+            title={"sortida"}
+            description={"punt A"}
+          />
+          <MapView.Marker
+            coordinate={{
+              latitude: this.coords[1].lat,
+              longitude: this.coords[1].lng
+            }}
+            title={"arribada"}
+            description={"punt B"}
+          />
+          <MapView.Polyline
+            coordinates={[
+              { latitude: 41.390205, longitude: 2.174007, },
+              { latitude: 41.380205, longitude: 2.175007 },
+            ]}
+            strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
+            strokeColors={[
+              '#7F0000',
+              '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
+              '#B24112',
+              '#E5845C',
+              '#238C23',
+              '#7F0000'
+            ]}
+            strokeWidth={6}
+          />
+        </MapView>
+      </View>
+    );
+  }
 }
