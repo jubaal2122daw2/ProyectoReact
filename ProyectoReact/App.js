@@ -3,6 +3,7 @@ import { View, useWindowDimensions, StyleSheet, Text, Image} from 'react-native'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { HomeComponent } from './components/HomeComponent';
 import { MapComponent } from './components/MapComponent';
+import { BuyComponent } from './components/BuyComponent';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const DummyRoute = () => ( // DEBUG
@@ -12,7 +13,7 @@ const DummyRoute = () => ( // DEBUG
 const renderScene = SceneMap({
   index: HomeComponent,
   map: MapComponent,
-  purchase: DummyRoute
+  purchase: BuyComponent
 });
 
 const renderTabBar = props => (
