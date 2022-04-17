@@ -8,46 +8,32 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
   },
 });
-export class MapComponent extends React.Component {
 
-  coords = [{
-    lat: 41.390205,
-    lng: 2.174007,  
-  }, {
-    lat: 41.380205,
-    lng: 2.175007,
-  }]
+const coords = [{
+  lat: 41.390205,
+  lng: 2.174007,
+}, {
+  lat: 41.380205,
+  lng: 2.175007,
+}]
+
+export class MapComponent extends React.Component {
 
   constructor(props) {
     super(props);
   }
-  
+//[{lat: this.coords[0].lat, lng: this.coords[0].lng}]
+
+  state = {lat: coords[0].lat, lng: coords[0].lng};
   render() {
     return (
       <View style={styles.container}>
-        <MapView style={styles.map} initialRegion={{
-          latitude: this.coords[0].lat,
-          longitude: this.coords[0].lng,
-          latitudeDelta: 0.0622,
-          longitudeDelta: 0.0121,
-        }}>
-          <MapView.Marker
-            coordinate={{
-              latitude: this.coords[0].lat,
-              longitude: this.coords[0].lng
-            }}
-            title={"sortida"}
-            description={"punt A"}
-          />
-          <MapView.Marker
-            coordinate={{
-              latitude: this.coords[1].lat,
-              longitude: this.coords[1].lng
-            }}
-            title={"arribada"}
-            description={"punt B"}
-          />
-          <MapView.Polyline
+        <MapView style={styles.map}
+          showsMyLocationButton={true}
+          showsUserLocation={true}
+        >
+          <MapMarker lat= {this.state.lat} lng={this.state.lng}/>
+          {/* <MapView.Polyline
             coordinates={[
               { latitude: 41.390205, longitude: 2.174007, },
               { latitude: 41.380205, longitude: 2.175007 },
@@ -62,9 +48,27 @@ export class MapComponent extends React.Component {
               '#7F0000'
             ]}
             strokeWidth={6}
-          />
+          /> */}
         </MapView>
       </View>
+    );
+  }
+}
+
+export class MapMarker extends React.Component{
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <MapView.Marker
+        coordinate={{
+          latitude: this.props.lat,
+          longitude: this.props.lng
+        }}
+        title={"sortida"}
+        description={"punt A"}
+      />
     );
   }
 }

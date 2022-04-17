@@ -1,55 +1,91 @@
-import * as React from 'react';
-import { View, useWindowDimensions, StyleSheet, Text, Image} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import 'react-native-gesture-handler';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View, useWindowDimensions, StyleSheet, Text, Image,Pressable } from 'react-native';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { HomeComponent } from './components/HomeComponent';
 import { MapComponent } from './components/MapComponent';
 import { BuyComponent } from './components/BuyComponent';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as Location from 'expo-location';
+import * as SQLite from 'expo-sqlite';
 
-const DummyRoute = () => ( // DEBUG
-  <View style={{ flex: 1, backgroundColor: '#fff' }} />
-);
-
-const renderScene = SceneMap({
-  index: HomeComponent,
-  map: MapComponent,
-  purchase: BuyComponent
+const styles = StyleSheet.create({
+  pressable:{
+    height:50,
+    backgroundColor:'red',
+    width:50,
+  }
 });
 
-const renderTabBar = props => (
-  <TabBar
-    {...props}
-    style={{ backgroundColor: '#121212' }}
-    indicatorStyle={{ backgroundColor: '#222', height: '100%' }}
-    renderIcon={({ route, focused, color }) => (
-      <Icon
-        name={route.icon}
-        color={color}
-        style={{ width: '100%' }}
-      />
-    )}
-  />
-);
+/*CONEXION LOCATION y llamada a BDD*/
+const Tab = createBottomTabNavigator();
+function MapLocation(){
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      llamadaBdd();
+    })();
+  }, []);
+  
+  return(
+      <MapComponent/>
+  );
+}
+
+/*CONEXION BDD */
+
+function llamadaBdd(){
+
+    const db = SQLite.openDatabase("db.db");
+
+    db.transaction(tx => {
+      // tx.executeSql('DROP TABLE IF EXISTS cines', []);
+      tx.executeSql(
+        "create table if not exists cines (id integer primary key not null, nombre string, valoracion int, lat real, long real, imagen blop);"
+      );
+    });
+    console.log('creada taula');
+    
+    db.transaction(
+      tx => {
+        tx.executeSql("insert into cines (id, nombre, valoracion, lat, long) values (?, ?, ?, ? ,?)", [0,'Cinesa', '5', 41.390205, 2.174007]);
+        tx.executeSql("insert into cines (id, nombre, valoracion, lat, long) values (?, ?, ?, ? ,?)", [1, 'Filmax Granvia', '5', 41.380205, 2.175007]);
+        // tx.executeSql("insert into cines (nombre, valoracion, lat, long, imagen) values (?, ?, ? ,?, ?)", ['Cinesa', '5', '41.3905', '2.1740', '']);
+        // tx.executeSql("select * from cines", [], (_, { rows }) =>
+        //   console.log(JSON.stringify(rows))
+        // );
+      }
+    );
+    db.transaction(
+      tx => {
+        tx.executeSql("select * from cines", [], (_, { rows }) =>
+          console.log(JSON.stringify(rows))
+        );
+      }
+    );
+}
 
 export default function App() {
-  const layout = useWindowDimensions();
-
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'index', title: 'Inicio', icon: 'home' },
-    { key: 'map', title: 'Mapa', icon: 'map' },
-    { key: 'purchase', title: 'Comprar', icon: 'shopping-cart' },
-  ]);
 
   return (
-    <TabView
-      renderTabBar={renderTabBar}
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-      tabBarPosition="bottom"
-      swipeEnabled={ false }
-    /> 
+    <NavigationContainer>
+      <Tab.Navigator initialRouteName="Home">
+        <Tab.Screen name="Home" component={HomeComponent} />
+        <Tab.Screen name="Map" component={MapLocation} />
+        <Tab.Screen name="Buy" component={BuyComponent} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
