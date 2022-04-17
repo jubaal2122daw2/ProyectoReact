@@ -12,7 +12,15 @@ const styles = StyleSheet.create({
 const MapComponent = (props) => {
   const puntoMapa = [];
   for(let prop of props["cinesBDD"]){
-    const punto = <MapMarker key={prop["id"]} lat= {prop["lat"]} lng={prop["long"]}/>;
+    const punto = <MapView.Marker
+        key={prop["id"]}
+        coordinate={{
+          latitude: prop["lat"],
+          longitude: prop["long"]
+        }}
+        title={ prop["nombre"].toString() }
+        description={prop["valoracion"].toString() }
+        />;
     puntoMapa.push(punto);
   }
     return (
@@ -26,20 +34,3 @@ const MapComponent = (props) => {
     );
 }
 export {MapComponent};
-export class MapMarker extends React.Component{
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <MapView.Marker
-        coordinate={{
-          latitude: this.props.lat,
-          longitude: this.props.lng
-        }}
-        title={"sortida"}
-        description={"punt A"}
-      />
-    );
-  }
-}
