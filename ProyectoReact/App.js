@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, useWindowDimensions, StyleSheet, Text, Image,Pressable } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, Text, Image, Pressable } from 'react-native';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { HomeComponent } from './components/HomeComponent';
 import { MapComponent } from './components/MapComponent';
@@ -13,17 +13,38 @@ import * as Location from 'expo-location';
 import * as SQLite from 'expo-sqlite';
 
 const styles = StyleSheet.create({
-  pressable:{
-    height:50,
-    backgroundColor:'red',
-    width:50,
+  pressable: {
+    height: 50,
+    backgroundColor: 'red',
+    width: 50,
   }
 });
 
 /*CONEXION LOCATION y llamada a BDD*/
 const Tab = createBottomTabNavigator();
-function MapLocation(){
+function MapLocation() {
   const [location, setLocation] = useState(null);
+  const [cinesBDD, setCinesBDD] = useState([]);
+  const cinesBDDesFalse = false;
+  const db = SQLite.openDatabase("db.db");
+
+  db.transaction(tx => {
+    // tx.executeSql('DROP TABLE IF EXISTS cines', []);
+    tx.executeSql(
+      "create table if not exists cines (id integer primary key not null, nombre string, valoracion int, lat real, long real, imagen blop);"
+    );
+  });
+
+  db.transaction(
+    tx => {
+      tx.executeSql("insert into cines (id, nombre, valoracion, lat, long) values (?, ?, ?, ? ,?)", [0, 'Cinesa', '5', 41.390205, 2.174007]);
+      tx.executeSql("insert into cines (id, nombre, valoracion, lat, long) values (?, ?, ?, ? ,?)", [1, 'Filmax Granvia', '5', 41.380205, 2.175007]);
+      // tx.executeSql("insert into cines (nombre, valoracion, lat, long, imagen) values (?, ?, ? ,?, ?)", ['Cinesa', '5', '41.3905', '2.1740', '']);
+      // tx.executeSql("select * from cines", [], (_, { rows }) =>
+      //   console.log(JSON.stringify(rows))
+      // );
+    }
+  );
 
   useEffect(() => {
     (async () => {
@@ -35,47 +56,27 @@ function MapLocation(){
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
-      llamadaBdd();
     })();
   }, []);
-  
-  return(
-      <MapComponent/>
-  );
-}
 
-/*CONEXION BDD */
-
-function llamadaBdd(){
-
-    const db = SQLite.openDatabase("db.db");
-
-    db.transaction(tx => {
-      // tx.executeSql('DROP TABLE IF EXISTS cines', []);
-      tx.executeSql(
-        "create table if not exists cines (id integer primary key not null, nombre string, valoracion int, lat real, long real, imagen blop);"
-      );
-    });
-    console.log('creada taula');
-    
+  useEffect(() => {
     db.transaction(
       tx => {
-        tx.executeSql("insert into cines (id, nombre, valoracion, lat, long) values (?, ?, ?, ? ,?)", [0,'Cinesa', '5', 41.390205, 2.174007]);
-        tx.executeSql("insert into cines (id, nombre, valoracion, lat, long) values (?, ?, ?, ? ,?)", [1, 'Filmax Granvia', '5', 41.380205, 2.175007]);
-        // tx.executeSql("insert into cines (nombre, valoracion, lat, long, imagen) values (?, ?, ? ,?, ?)", ['Cinesa', '5', '41.3905', '2.1740', '']);
-        // tx.executeSql("select * from cines", [], (_, { rows }) =>
-        //   console.log(JSON.stringify(rows))
-        // );
-      }
-    );
-    db.transaction(
-      tx => {
-        tx.executeSql("select * from cines", [], (_, { rows }) =>
-          console.log(JSON.stringify(rows))
+        tx.executeSql("select * from cines", [], (_, { rows:{ _array } }) =>
+          setCinesBDD(_array)
         );
       }
     );
+}, []);
+
+return (
+  <View>
+      {cinesBDD.length > 0 && (<MapComponent cinesBDD ={cinesBDD} />)}
+  </View>
+);
 }
+
+/*CONEXION BDD */
 
 export default function App() {
 
