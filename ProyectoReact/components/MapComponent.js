@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 const MapComponent = (props) => {
   const puntoMapa = [];
   const [modalVisible, setModalVisible] = useState(false);
-  const [propHook, setPropHook] = useState({});
+  const [cine, setCine] = useState({});
   return (
     <View style={styles.container}>
         <Modal
@@ -61,12 +61,11 @@ const MapComponent = (props) => {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
             setModalVisible(!modalVisible);
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Hello World!</Text>
+              <Text style={styles.modalText}>{cine["nombre"]}</Text>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => setModalVisible(!modalVisible)}>
@@ -78,7 +77,7 @@ const MapComponent = (props) => {
         <MapView style={styles.map}
           showsMyLocationButton={true}
           showsUserLocation={true}>
-          {props["cinesBDD"].map(prop => (
+          {props["cinesBDD"].map((prop, index) => (
             <MapView.Marker
               key={prop["id"]}
               coordinate={{
@@ -87,7 +86,7 @@ const MapComponent = (props) => {
               }}
               title={prop["nombre"]}
               description={prop["valoracion"].toString()}>
-              <MapView.Callout onPress={() => { setModalVisible(true), setPropHook({ prop }) }} >
+              <MapView.Callout onPress={() => { setModalVisible(true), setCine(prop) }} >
               </MapView.Callout>
             </MapView.Marker>
           ))}
