@@ -83,9 +83,30 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator initialRouteName="Home">
-        <Tab.Screen name="Home" component={HomeComponent} />
-        <Tab.Screen name="Map" component={MapLocation} />
-        <Tab.Screen name="Buy" component={BuyComponent} />
+        <Tab.Screen name="Home" component={HomeComponent}
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="home" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen name="Map" component={MapLocation}
+          options={{
+            tabBarLabel: 'Map',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="map" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen name="Buy" component={BuyComponent}
+          options={{
+            tabBarLabel: 'Buy',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="shopping-cart" color={color} size={size} />
+            ),
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );
