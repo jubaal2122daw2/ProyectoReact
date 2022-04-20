@@ -51,9 +51,15 @@ const styles = StyleSheet.create({
 });
 
 const MapComponent = (props) => {
-  const puntoMapa = [];
+  const  coordenadasPoly = [];
   const [modalVisible, setModalVisible] = useState(false);
   const [cine, setCine] = useState({});
+  props["cinesBDD"].map((prop,index) =>{
+    coordenadasPoly.push({
+      latitude: prop["lat"],
+      longitude: prop["long"],
+    });
+  });
   return (
     <View style={styles.container}>
         <Modal
@@ -90,6 +96,19 @@ const MapComponent = (props) => {
               </MapView.Callout>
             </MapView.Marker>
           ))}
+          <MapView.Polyline
+            coordinates={coordenadasPoly}
+            strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
+            strokeColors={[
+              '#7F0000',
+              '#00000000', // no color, creates a "long" gradient between the previous and next coordinate
+              '#B24112',
+              '#E5845C',
+              '#238C23',
+              '#7F0000'
+            ]}
+            strokeWidth={6}
+          />
         </MapView>
     </View>
   );

@@ -29,7 +29,7 @@ function MapLocation() {
   const db = SQLite.openDatabase("db.db");
 
   db.transaction(tx => {
-    // tx.executeSql('DROP TABLE IF EXISTS cines', []);
+    //tx.executeSql('DROP TABLE IF EXISTS cines', []);
     tx.executeSql(
       "create table if not exists cines (id integer primary key not null, nombre string, valoracion int, lat real, long real, imagen blop);"
     );
@@ -39,7 +39,7 @@ function MapLocation() {
     tx => {
       tx.executeSql("insert into cines (id, nombre, valoracion, lat, long) values (?, ?, ?, ? ,?)", [0, 'Cinesa', '5', 41.390205, 2.174007]);
       tx.executeSql("insert into cines (id, nombre, valoracion, lat, long) values (?, ?, ?, ? ,?)", [1, 'Filmax Granvia', '5', 41.380205, 2.175007]);
-      // tx.executeSql("insert into cines (nombre, valoracion, lat, long, imagen) values (?, ?, ? ,?, ?)", ['Cinesa', '5', '41.3905', '2.1740', '']);
+      tx.executeSql("insert into cines (id, nombre, valoracion, lat, long) values (?, ?, ?, ? ,?)", [2, 'Prueba', '5', 41.370205, 2.176007]);
       // tx.executeSql("select * from cines", [], (_, { rows }) =>
       //   console.log(JSON.stringify(rows))
       // );
