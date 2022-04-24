@@ -99,14 +99,14 @@ export default function App() {
             ),
           }}
         />
-        <Tab.Screen name="Buy" component={BuyComponent}
+        {/* <Tab.Screen name="Buy" component={BuyComponent}
           options={{
             tabBarLabel: 'Buy',
             tabBarIcon: ({ color, size }) => (
               <Icon name="shopping-cart" color={color} size={size} />
             ),
           }}
-        />
+        /> */}
       </Tab.Navigator>
     </NavigationContainer>
   );

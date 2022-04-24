@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Button, TouchableHighlight } from 'react-native';
 import { Camera } from 'expo-camera';
 
-export function BuyComponent() {
+export function BuyComponent(props) {
     const [hasPermission, setHasPermission] = useState(null);
     const [type, setType] = useState(Camera.Constants.Type.back);
+    const [foto, setFoto] = useState('');
+    const cameraRef = useRef(null)
 
     useEffect(() => {
         (async () => {
@@ -13,6 +15,20 @@ export function BuyComponent() {
             console.log(status);
         })();
     }, []);
+
+    const hacerFoto = async () => {
+        console.log("Hacer foto");
+        if (cameraRef) {
+            const options = { base64: true };
+            const data = await cameraRef.current.takePictureAsync(options);
+            props.setFoto(data.base64);
+        } else {
+            console.log("No hay camara");
+        }
+    }
+    const cerrarCamara = () => {
+        props.setCamara(false);
+    }
 
     if (hasPermission === null) {
         return <View />;
@@ -23,8 +39,16 @@ export function BuyComponent() {
 
     return (
         <View style={styles.container}>
-            <Camera style={styles.camera} type={type}>
+            <Camera style={styles.camera} type={type} ref={cameraRef}>
                 <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        style={styles.capture}
+                        onPress={() => hacerFoto()}
+                    />
+                    <TouchableOpacity
+                        style={styles.cerrar}
+                        onPress={() => cerrarCamara()}
+                    />
                     <TouchableOpacity
                         style={styles.button}
                         onPress={() => {
@@ -44,10 +68,21 @@ export function BuyComponent() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        position: 'absolute',
     },
     camera: {
         flex: 1,
+    },
+    capture: {
+        width: 40,
+        height: 40,
+        borderRadius: 35,
+        borderWidth: 5,
+        borderColor: '#FFF',
+        marginBottom: 15,
+        backgroundColor: 'orange',
     },
     buttonContainer: {
         flex: 1,
@@ -57,11 +92,20 @@ const styles = StyleSheet.create({
     },
     button: {
         flex: 0.1,
-        alignSelf: 'flex-end',
+        // alignSelf: 'flex-end',
         alignItems: 'center',
     },
     text: {
         fontSize: 18,
         color: 'white',
     },
+    cerrar:{
+        width: 40,
+        height: 40,
+        borderRadius: 35,
+        borderWidth: 5,
+        borderColor: '#FFF',
+        marginBottom: 15,
+        backgroundColor: 'red',
+    }
 });
