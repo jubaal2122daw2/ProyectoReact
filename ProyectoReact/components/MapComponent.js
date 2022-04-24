@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions, Alert, Modal, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Alert, Modal, Pressable, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { BuyComponent } from './BuyComponent';
 
@@ -12,12 +12,12 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
+  // centeredView: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   marginTop: 22,
+  // },
   modalView: {
     margin: 20,
     backgroundColor: 'white',
@@ -53,10 +53,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
-  imagen:{
-    width: 100,
-    height: 100,
-  }
+  image: {
+    marginBottom: 40,
+    width: 300,
+    height: 300,
+  },
 });
 
 const MapComponent = (props) => {
@@ -64,14 +65,14 @@ const MapComponent = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [cine, setCine] = useState({});
   const [camara, setCamara] = useState(false);
-  const [foto, setFoto] = useState('');
+  const [foto, setFoto] = useState(['']);
   props["cinesBDD"].map((prop,index) =>{
     coordenadasPoly.push({
       latitude: prop["lat"],
       longitude: prop["long"],
     });
   });
-  console.log(foto) //Para ver si llega el Base 64
+  // console.log(foto) //Para ver si llega el Base 64
   return (
     <View style={styles.container}>
         <Modal
@@ -84,7 +85,7 @@ const MapComponent = (props) => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>{cine["nombre"]}</Text>
-              {/* <Image source={{uri: `data:image/png;base64,${foto}`}} /> */}
+              <Image style={styles.image} source={{uri: `data:image/png;base64,${foto}`}} />
               <Icon name="camera" size={25} color="black" onPress={() => {setCamara(!camara), setModalVisible(!modalVisible)} }/>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
