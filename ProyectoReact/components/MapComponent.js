@@ -85,11 +85,15 @@ const MapComponent = (props) => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>{cine["nombre"]}</Text>
-              <Image style={styles.image} source={{uri: `data:image/png;base64,${foto}`}} />
+              <Image style={styles.image} source={{uri: `data:image/png;base64,${foto[cine.nombre]}`}} />
               <Icon name="camera" size={25} color="black" onPress={() => {setCamara(!camara), setModalVisible(!modalVisible)} }/>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}>
+                onPress={() => {
+                  setModalVisible(!modalVisible)
+                  // console.log("FOTO:", foto.length, typeof foto);
+                  // console.log("CINE:", cine.nombre);
+                  }}>
                 <Text style={styles.textStyle}>Hide Modal</Text>
               </Pressable>
             </View>
@@ -125,7 +129,7 @@ const MapComponent = (props) => {
             strokeWidth={6}
           />
         </MapView>
-        {camara &&(<BuyComponent setFoto={setFoto} setCamara={setCamara}></BuyComponent>)}
+        {camara &&(<BuyComponent setFoto={setFoto} cine={cine["nombre"]} setCamara={setCamara}></BuyComponent>)}
     </View>
   );
 }

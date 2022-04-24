@@ -21,7 +21,12 @@ export function BuyComponent(props) {
         if (cameraRef) {
             const options = { base64: true };
             const data = await cameraRef.current.takePictureAsync(options);
-            props.setFoto(data.base64);
+            props.setFoto(prevState => {
+                //return prevState = prevState[props.cine] = data.base64;
+                let prevStateCopy = Object.assign({}, prevState);
+                prevStateCopy[props.cine] = data.base64;
+                return prevStateCopy;
+            });
         } else {
             console.log("No hay camara");
         }
